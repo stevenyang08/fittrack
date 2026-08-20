@@ -1,0 +1,36 @@
+story:
+  id: FIT-5
+  title: 'Navigation shell: auth stack vs main tab stack'
+  description: 'Implement the app''s navigation skeleton per architecture.md: when
+    signed out, an auth stack (Login, Register placeholders); when signed in, a bottom
+    tab navigator with Workouts, Calories, and Stats placeholder screens plus a Log
+    Out action. Switching is driven by FIT-4 session state. Placeholder screens only
+    — real screens land in FIT-6/8/10/12.
+
+    '
+  feature: F3 App shell & navigation
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-4
+  acceptance_criteria:
+  - With no signed-in user, the app renders the auth stack (Login is the initial route;
+    Register is reachable); no main-tab screen is mounted
+  - 'With a signed-in user, the app renders a bottom tab navigator with exactly three
+    tabs: Workouts, Calories, Stats (placeholder content)'
+  - A Log Out control is available from the main shell; activating it calls signOut
+    and returns the user to the Login route
+  - Signed-in users cannot navigate back to auth screens via back gesture/button (stack
+    is replaced, not pushed)
+  - jest + React Native Testing Library tests render the navigator with mocked session
+    states and assert which stack/tabs appear, including the logout transition
+  assumptions_and_research:
+  - 'Navigation library: React Navigation (native-stack + bottom-tabs), the standard
+    Expo-compatible choice; expo-router would also satisfy DEC-1 — treated as a minor
+    implementation detail the developer/architect may swap without a new decision'
+  - Tab order Workouts, Calories, Stats mirrors the logging-then-review flow
+  - Deep linking is out of scope for MVP
+  open_questions: []
+  approved_by: Steven
+  approved_date: '2026-08-20'

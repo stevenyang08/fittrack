@@ -1,0 +1,43 @@
+story:
+  id: FIT-12
+  title: Stats screen with summary and sortable history list
+  description: 'Replace the Stats tab placeholder with the real screen: a summary
+    section rendering FIT-11 aggregates and a history list with user-facing sort controls
+    (field + direction). This completes the MVP''s "stat tracker and sorts" requirement
+    end to end.
+
+    '
+  feature: F6 Stats & sorting
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-5
+  - FIT-11
+  acceptance_criteria:
+  - 'Stats tab shows a summary section with: total workouts, total minutes, total
+    calories burned, total calories consumed, and net calories, sourced from FIT-11
+    getSummary'
+  - Below the summary, a history list renders workout items (type, duration, calories
+    burned, date) and calorie items (description, calories, date) visually distinguishable
+    by kind
+  - Sort controls let the user pick sort field (Date, Calories, Duration, Type) and
+    toggle asc/desc; changing either re-renders the list in the new order (asserted
+    in tests via FIT-11)
+  - Default sort is Date descending; the active sort field and direction are visibly
+    indicated
+  - 'Stats reflect current data when the tab gains focus: logging a workout or calorie
+    entry and returning to Stats shows updated numbers without app restart'
+  - 'Empty state: a friendly message and zeroed summary when the user has no data'
+  - All behaviors covered by React Native Testing Library tests with FIT-11 mocked
+    or backed by the test adapter
+  assumptions_and_research:
+  - Refresh-on-focus (navigation focus listener) is sufficient; no reactive live-query
+    layer needed for MVP
+  - Plain numeric summary (no charts) per architecture.md non-goals
+  - List virtualization (FlatList) assumed; performance testing on device is a manual
+    smoke check
+  open_questions:
+  - 'Q3: confirm net calories belongs in the summary (shared with FIT-11)'
+  approved_by: Steven
+  approved_date: '2026-08-20'

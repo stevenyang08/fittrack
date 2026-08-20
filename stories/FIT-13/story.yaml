@@ -1,0 +1,37 @@
+story:
+  id: FIT-13
+  title: 'Stay signed in: persisted session via expo-secure-store'
+  description: 'Add the "stay signed in" behavior from DEC-3/architecture.md: an opt-in
+    toggle on the Login screen persists the session in expo-secure-store so the app
+    restores it on launch; logout always clears it. Polish story — the app is fully
+    usable without it (session is just lost on restart).
+
+    '
+  feature: F2 Authentication
+  priority: P1
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-4
+  - FIT-6
+  acceptance_criteria:
+  - Login screen gains a 'Stay signed in' toggle, off by default
+  - With the toggle on, successful login writes a session record (user id + issued-at)
+    to expo-secure-store; with it off, nothing is persisted
+  - On app launch, a valid persisted session restores the signed-in state (main tabs
+    shown) without re-entering credentials; the stored user must still exist in the
+    DB, otherwise the record is discarded and the auth stack is shown
+  - signOut deletes the persisted session record in all cases
+  - 'A corrupt/unreadable stored value is handled gracefully: user lands on Login,
+    no crash'
+  - No password or password hash is ever written to secure-store (asserted in tests)
+  - All behaviors covered by jest tests with expo-secure-store mocked
+  assumptions_and_research:
+  - Persisted sessions do not expire in MVP (local mock app, no server risk); expiry
+    noted as a fast-follow hardening item
+  - expo-secure-store chosen per architecture.md; its actual keychain/keystore behavior
+    requires a device and is a manual smoke check — jest verifies logic against a
+    mock
+  open_questions: []
+  approved_by: Steven
+  approved_date: '2026-08-20'

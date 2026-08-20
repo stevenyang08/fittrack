@@ -1,0 +1,39 @@
+story:
+  id: FIT-7
+  title: Workout data layer (create, list, validate)
+  description: 'Typed service functions over the FIT-2 schema for workouts: create
+    a workout for a user and list a user''s workouts with sort options. Includes input
+    validation and the workout-type preset list. No UI in this story.
+
+    '
+  feature: F4 Workout tracking
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-2
+  acceptance_criteria:
+  - addWorkout(userId, { type, durationMin, caloriesBurned, performedAt }) inserts
+    a row and returns the created record with its id
+  - 'Validation returns typed errors: type must be one of the preset list; durationMin
+    integer > 0 and <= 1440; caloriesBurned integer >= 0 and <= 20000; performedAt
+    a valid timestamp not in the future'
+  - performedAt defaults to now when omitted
+  - 'listWorkouts(userId, { sortBy: performedAt|caloriesBurned|durationMin|type, direction:
+    asc|desc }) returns only that user''s workouts in the requested order; default
+    is performedAt desc'
+  - Workouts of other users never appear in results (asserted with a two-user test)
+  - All behaviors covered by jest unit tests against the FIT-2 test adapter, including
+    sort order for every sortBy/direction combination
+  assumptions_and_research:
+  - 'Preset workout types: Run, Walk, Cycle, Strength, Swim, Yoga, Sports, Other —
+    assumption pending Q1; free text would weaken type sorting'
+  - Duration in whole minutes; calories as whole kcal — simplest units for a mock
+    app
+  - Sanity bounds (1440 min, 20000 kcal) prevent nonsense data without real-world
+    debate; adjustable
+  - No pagination for MVP; local data volumes are small
+  open_questions:
+  - 'Q1: confirm preset workout-type list vs free text'
+  approved_by: Steven
+  approved_date: '2026-08-20'

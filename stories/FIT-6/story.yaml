@@ -1,0 +1,42 @@
+story:
+  id: FIT-6
+  title: Registration and login screens
+  description: 'Build the real auth UI on the FIT-5 auth stack: a Login screen and
+    a Register screen wired to FIT-3/FIT-4. Field validation, inline error display,
+    loading state, and navigation between the two screens.
+
+    '
+  feature: F2 Authentication
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-3
+  - FIT-5
+  acceptance_criteria:
+  - 'Login screen: username + password (secure text entry) fields, Sign In button,
+    and a link to Register; Register screen: username, password, confirm-password
+    fields, Create Account button, and a link back to Login'
+  - Client-side validation mirrors FIT-3 rules (username 3-30 chars, password min
+    8, confirm-password match) with inline error messages; submit is blocked while
+    invalid
+  - Successful login or registration signs the user in (registration auto-signs-in)
+    and the main tab shell appears
+  - Failed login shows a generic 'Invalid username or password' message; duplicate-username
+    registration shows a specific username-taken message; neither crashes or clears
+    typed input unnecessarily
+  - Submit buttons are disabled and show a busy indicator while an auth call is in
+    flight; double-submit does not create duplicate accounts (asserted in a test)
+  - All behaviors above covered by React Native Testing Library tests with the auth
+    service mocked
+  assumptions_and_research:
+  - Registration auto-signs the user in (no separate 'now go log in' step) — standard
+    UX assumption
+  - No password reset/recovery in MVP (out_of_scope); losing a password means creating
+    a new local account
+  - Visual polish is minimal; layout/keyboard behavior on real devices is a manual
+    smoke check, not a jest gate
+  open_questions:
+  - 'Q2: confirm password policy (shared with FIT-3)'
+  approved_by: Steven
+  approved_date: '2026-08-20'

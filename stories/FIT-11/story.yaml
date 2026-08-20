@@ -1,0 +1,42 @@
+story:
+  id: FIT-11
+  title: Stats aggregation and history sorting logic
+  description: 'Pure, UI-free stats logic for the Stats screen: summary aggregates
+    over a user''s workouts and calorie entries, and a unified history model with
+    sorting. This is the core of "stat tracker and sorts" from the MVP brief, delivered
+    as unit-tested functions before any UI.
+
+    '
+  feature: F6 Stats & sorting
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-7
+  - FIT-9
+  acceptance_criteria:
+  - 'getSummary(userId) returns: totalWorkouts, totalDurationMin, totalCaloriesBurned,
+    avgDurationMin and avgCaloriesBurned per workout, totalEntries, totalCaloriesConsumed,
+    and netCalories (consumed minus burned)'
+  - 'Summary handles the empty case: all totals 0 and averages 0 (never NaN/undefined)
+    for a user with no data'
+  - 'getHistory(userId, { sortBy: date|calories|duration|type, direction: asc|desc
+    }) returns a unified list of workout and calorie items with a kind discriminator;
+    date maps to performedAt/consumedAt, calories to burned/consumed'
+  - 'Sorting is deterministic and stable: items lacking the sort field (e.g. calorie
+    entries have no duration; sorting by type groups calorie entries under a ''Calories''
+    label or sorts them last — implementer picks one, tests pin it down); ties break
+    by date desc'
+  - History and summary include only the given user's data (two-user test)
+  - Every sortBy/direction combination plus empty and mixed datasets covered by jest
+    unit tests; functions are pure or run against the FIT-2 test adapter
+  assumptions_and_research:
+  - Net calories (consumed minus burned) included as a summary number — assumption
+    pending Q3
+  - '''Sorts'' from the human brief interpreted as user-selectable sorting of the
+    history list by date, calories, duration, and type (matches architecture.md)'
+  - All-time aggregates only for MVP; per-day/per-week breakdowns and charts are fast-follow
+  open_questions:
+  - 'Q3: confirm net calories belongs in the summary'
+  approved_by: Steven
+  approved_date: '2026-08-20'

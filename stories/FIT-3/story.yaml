@@ -1,0 +1,41 @@
+story:
+  id: FIT-3
+  title: 'Auth core: registration and credential verification with salted hashes'
+  description: 'Implement the non-UI authentication logic per DEC-3: register a local
+    account with a per-user random salt and hashed password (expo-crypto), and verify
+    credentials at login. Pure service-layer code over the FIT-2 data layer; no screens
+    in this story.
+
+    '
+  feature: F2 Authentication
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-2
+  acceptance_criteria:
+  - registerUser(username, password) creates a users row with a per-user cryptographically
+    random salt and a hash derived from salt+password via expo-crypto; the plaintext
+    password is never stored or logged
+  - Registering an already-taken username returns a typed USERNAME_TAKEN error (case-insensitive
+    match) and creates no row
+  - 'Username validation: 3-30 characters, trimmed; password validation: minimum 8
+    characters; violations return typed validation errors'
+  - verifyCredentials(username, password) returns the user for correct credentials
+  - Wrong password and unknown username both return the same generic INVALID_CREDENTIALS
+    error (no account-existence leak)
+  - Two users registering the same password produce different hashes (distinct salts),
+    asserted in a unit test
+  - All of the above covered by jest unit tests running against the FIT-2 test adapter
+    with expo-crypto mocked or polyfilled deterministically
+  assumptions_and_research:
+  - Hashing via expo-crypto digest (e.g. SHA-256 over salt+password); acceptable for
+    a mock local app per DEC-3 — not production-grade KDF (no bcrypt/PBKDF2 in scope),
+    limitation documented in README
+  - Password policy of minimum 8 chars with no complexity rules is an assumption —
+    see Q2
+  - Usernames are unique case-insensitively to avoid confusing near-duplicate accounts
+  open_questions:
+  - 'Q2: confirm password policy (assumed min 8 characters, no other rules)'
+  approved_by: Steven
+  approved_date: '2026-08-20'

@@ -1,0 +1,40 @@
+story:
+  id: FIT-8
+  title: Log Workout screen
+  description: 'Replace the Workouts tab placeholder with a functional screen: a form
+    to log a workout (type picker, duration, calories burned, date/time) wired to
+    FIT-7, plus a simple list of the signed-in user''s recent workouts so a save is
+    immediately visible.
+
+    '
+  feature: F4 Workout tracking
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-5
+  - FIT-7
+  acceptance_criteria:
+  - 'Workouts tab shows a form with: workout-type picker (preset list from FIT-7),
+    duration (minutes, numeric keyboard), calories burned (numeric keyboard), and
+    date/time defaulting to now'
+  - Invalid input shows inline error messages mapped from FIT-7 validation errors;
+    Save is blocked while invalid
+  - Saving calls addWorkout with the signed-in user's id, clears the form, shows a
+    success confirmation, and the new workout appears at the top of the recent list
+    without app restart
+  - The recent list shows type, duration, calories burned, and date for the signed-in
+    user only, newest first
+  - 'Empty state: a friendly ''No workouts yet'' message when the user has no workouts'
+  - All behaviors covered by React Native Testing Library tests with the FIT-7 service
+    mocked or backed by the test adapter
+  assumptions_and_research:
+  - Date/time entry may be a simple editable field or platform picker; exact widget
+    is an implementation detail, but must default to now and reject future dates (FIT-7
+    rule)
+  - The full sortable history lives on the Stats screen (FIT-12); this list is a convenience
+    view capped at ~10 recent items
+  - Native picker behavior on real devices is a manual smoke check; logic is jest-verified
+  open_questions: []
+  approved_by: Steven
+  approved_date: '2026-08-20'

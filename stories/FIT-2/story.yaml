@@ -1,0 +1,41 @@
+story:
+  id: FIT-2
+  title: SQLite schema, migrations, and database access module
+  description: 'Implement the local persistence foundation (per DEC-2): a database
+    module that opens/creates the SQLite database via expo-sqlite and runs versioned,
+    idempotent migrations creating the users, workouts, and calorie_entries tables
+    from architecture.md. Expose a typed query-execution interface that feature data
+    layers (auth, workouts, calories) will build on.
+
+    '
+  feature: F1 Foundation
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-1
+  acceptance_criteria:
+  - A db module initializes the database on app start and applies pending migrations
+    exactly once (schema version tracked via PRAGMA user_version or a migrations table)
+  - 'Migration v1 creates: users(id, username UNIQUE NOT NULL, password_hash, salt,
+    created_at), workouts(id, user_id FK->users, type, duration_min, calories_burned,
+    performed_at), calorie_entries(id, user_id FK->users, description, calories, consumed_at)'
+  - Foreign keys are enforced (PRAGMA foreign_keys = ON); inserting a workout or calorie
+    entry with a nonexistent user_id fails in tests
+  - 'Running initialization twice is safe: no errors, no duplicate tables, schema
+    version unchanged'
+  - The db module exposes a typed interface (execute/query) behind a thin adapter
+    so the same SQL runs in jest against a Node SQLite driver (test double), proven
+    by passing unit tests for all criteria above
+  - Unique constraint on users.username is verified by a failing duplicate-insert
+    test
+  assumptions_and_research:
+  - expo-sqlite does not run in jest; tests use an adapter backed by a Node SQLite
+    implementation (e.g. better-sqlite3 as a devDependency) executing identical SQL
+    — mitigates risk R1 in project.yaml
+  - IDs are INTEGER PRIMARY KEY AUTOINCREMENT; timestamps stored as ISO-8601 TEXT
+    in UTC for portable sorting
+  - Single database file; no per-user database files
+  open_questions: []
+  approved_by: Steven
+  approved_date: '2026-08-20'

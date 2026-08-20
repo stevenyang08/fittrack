@@ -1,0 +1,34 @@
+story:
+  id: FIT-4
+  title: In-memory session state with login/logout actions
+  description: 'Provide app-wide session state: a React context/provider (or equivalent
+    store) exposing the current user and signIn/signOut actions built on FIT-3''s
+    verification. In-memory only; persisted "stay signed in" is FIT-13. No screens
+    in this story.
+
+    '
+  feature: F2 Authentication
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-3
+  acceptance_criteria:
+  - A session provider exposes { currentUser | null, status, signIn(username, password),
+    signOut() } to the component tree via a typed hook
+  - Successful signIn sets currentUser to the verified user's id and username; failed
+    signIn leaves session signed out and surfaces the typed error to the caller
+  - signOut clears currentUser and any session state synchronously
+  - The hook throws a clear error when used outside the provider
+  - Session state transitions (signed-out -> signing-in -> signed-in -> signed-out,
+    and failed sign-in) are covered by jest tests using React Testing Library's renderHook
+    with FIT-3 mocked
+  - No password or hash is retained in session state after sign-in
+  assumptions_and_research:
+  - Plain React context + reducer is sufficient; no state-management library is added
+    for MVP (keeps DEC-1 stack minimal)
+  - Session does not survive app restart in this story by design — FIT-13 adds persistence
+  - Fully unit-testable; no device required
+  open_questions: []
+  approved_by: Steven
+  approved_date: '2026-08-20'

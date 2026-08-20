@@ -1,0 +1,36 @@
+story:
+  id: FIT-1
+  title: Expo/TypeScript project scaffold with test and lint tooling
+  description: 'Create the FitTrack app skeleton: Expo managed-workflow project in
+    TypeScript (per DEC-1) with jest test tooling, lint/format tooling, and a placeholder
+    root screen. This is the foundation every other story builds on; no product features
+    yet.
+
+    '
+  feature: F1 Foundation
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies: []
+  acceptance_criteria:
+  - Expo managed-workflow project exists in the repo with TypeScript in strict mode;
+    `npx tsc --noEmit` completes with zero errors
+  - App boots to a placeholder screen (app name text) via `npx expo start` without
+    runtime errors
+  - jest is configured for React Native (jest-expo preset or equivalent) and `npm
+    test` runs at least one passing sample test
+  - React Native Testing Library is installed and a sample component test renders
+    the placeholder screen and asserts its text
+  - ESLint and Prettier are configured; `npm run lint` passes on the scaffold
+  - README documents prerequisites, install, run, test, and lint commands
+  - No secrets, generated build artifacts, or node_modules committed (.gitignore in
+    place)
+  assumptions_and_research:
+  - Latest stable Expo SDK at implementation time; exact version is an implementation
+    detail for the developer
+  - All acceptance criteria verifiable on a dev machine/CI; launching on a physical
+    device or simulator is a manual smoke check, not a gate for this story
+  - App display name 'FitTrack' (working name from architecture.md)
+  open_questions: []
+  approved_by: Steven
+  approved_date: '2026-08-20'

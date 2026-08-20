@@ -1,0 +1,34 @@
+story:
+  id: FIT-9
+  title: Calorie entry data layer (create, list, validate)
+  description: 'Typed service functions over the FIT-2 schema for calorie entries
+    (calories consumed): create an entry for a user and list a user''s entries with
+    sort options. Structurally parallel to FIT-7. No UI in this story.
+
+    '
+  feature: F5 Calorie tracking
+  priority: P0
+  mvp: true
+  status: approved
+  dependencies:
+  - FIT-2
+  acceptance_criteria:
+  - addCalorieEntry(userId, { description, calories, consumedAt }) inserts a row and
+    returns the created record with its id
+  - 'Validation returns typed errors: description trimmed, 1-100 chars; calories integer
+    > 0 and <= 10000; consumedAt a valid timestamp not in the future'
+  - consumedAt defaults to now when omitted
+  - 'listCalorieEntries(userId, { sortBy: consumedAt|calories|description, direction:
+    asc|desc }) returns only that user''s entries in the requested order; default
+    is consumedAt desc'
+  - Entries of other users never appear in results (asserted with a two-user test)
+  - All behaviors covered by jest unit tests against the FIT-2 test adapter, including
+    sort order for every sortBy/direction combination
+  assumptions_and_research:
+  - Free-text description (e.g. 'chicken salad') rather than a food database — food
+    lookup APIs are out of scope for a local mock app
+  - Whole kcal integers; 10000 kcal sanity cap per entry
+  - No meal-type categorization (breakfast/lunch/dinner) in MVP — fast-follow candidate
+  open_questions: []
+  approved_by: Steven
+  approved_date: '2026-08-20'
