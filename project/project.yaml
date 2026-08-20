@@ -1,0 +1,213 @@
+project:
+  name: fittrack
+  vision: 'Mock fitness app: track workouts and calories with a working login and
+    sortable stats'
+  status: roadmap_approved
+  created: '2026-08-20'
+  updated: '2026-08-20'
+mvp:
+  definition: 'A single Expo/React Native app (iOS + Android) where a user can create
+    a local account, log in and out, log workouts (type, duration, calories burned)
+    and calorie entries (description, calories consumed), and view a stats screen
+    with summary totals/averages and a history list sortable by date, calories, duration,
+    and type. All data is stored locally in SQLite; no backend.
+
+    '
+  in_scope:
+  - Expo managed-workflow app in TypeScript, one codebase for iOS and Android (DEC-1)
+  - 'Local SQLite persistence via expo-sqlite: users, workouts, calorie_entries (DEC-2)'
+  - 'Local-only auth: registration, login, logout, salted+hashed credentials, in-memory
+    session (DEC-3)'
+  - Optional 'stay signed in' via expo-secure-store (P1 within MVP)
+  - 'Log a workout: type, duration (minutes), calories burned, date/time'
+  - 'Log a calorie entry: description, calories, date/time'
+  - 'Stats screen: totals and averages (workouts, minutes, calories burned/consumed,
+    net)'
+  - History list with sorting by date, calories, duration, and type (asc/desc)
+  - 'Navigation: auth stack when signed out, tab stack (Workouts, Calories, Stats)
+    when signed in'
+  - Unit/component test coverage runnable in CI without physical devices (jest + RN
+    Testing Library)
+  out_of_scope:
+  - Cloud sync or any backend services
+  - Hosted/real authentication, password reset, email verification
+  - Social features, sharing, leaderboards
+  - Wearable/HealthKit/Google Fit integrations
+  - Push notifications
+  - Charts/graphs beyond simple lists and summary numbers (fast-follow candidate)
+  - Editing/deleting logged entries (fast-follow candidate; confirm with human)
+  - Multi-device or multi-user-per-device account switching beyond basic logout/login
+features:
+- id: F1
+  name: Foundation
+  summary: Project scaffold and SQLite data layer everything else builds on
+  stories:
+  - FIT-1
+  - FIT-2
+- id: F2
+  name: Authentication
+  summary: Local account creation, login/logout, session, auth screens
+  stories:
+  - FIT-3
+  - FIT-4
+  - FIT-6
+  - FIT-13
+- id: F3
+  name: App shell & navigation
+  summary: Auth stack vs main tab stack gated on session state
+  stories:
+  - FIT-5
+- id: F4
+  name: Workout tracking
+  summary: Persist and log workouts (type, duration, calories burned)
+  stories:
+  - FIT-7
+  - FIT-8
+- id: F5
+  name: Calorie tracking
+  summary: Persist and log calorie entries (description, calories consumed)
+  stories:
+  - FIT-9
+  - FIT-10
+- id: F6
+  name: Stats & sorting
+  summary: Summary totals/averages and sortable history list
+  stories:
+  - FIT-11
+  - FIT-12
+stories:
+- id: FIT-1
+  title: Expo/TypeScript project scaffold with test and lint tooling
+- id: FIT-2
+  title: SQLite schema, migrations, and database access module
+- id: FIT-3
+  title: 'Auth core: registration and credential verification with salted hashes'
+- id: FIT-4
+  title: In-memory session state with login/logout actions
+- id: FIT-5
+  title: 'Navigation shell: auth stack vs main tab stack'
+- id: FIT-6
+  title: Registration and login screens
+- id: FIT-7
+  title: Workout data layer (create, list, validate)
+- id: FIT-8
+  title: Log Workout screen
+- id: FIT-9
+  title: Calorie entry data layer (create, list, validate)
+- id: FIT-10
+  title: Log Calories screen
+- id: FIT-11
+  title: Stats aggregation and history sorting logic
+- id: FIT-12
+  title: Stats screen with summary and sortable history list
+- id: FIT-13
+  title: 'Stay signed in: persisted session via expo-secure-store'
+dependency_map:
+  FIT-1: []
+  FIT-2:
+  - FIT-1
+  FIT-3:
+  - FIT-2
+  FIT-4:
+  - FIT-3
+  FIT-5:
+  - FIT-4
+  FIT-6:
+  - FIT-3
+  - FIT-5
+  FIT-7:
+  - FIT-2
+  FIT-8:
+  - FIT-5
+  - FIT-7
+  FIT-9:
+  - FIT-2
+  FIT-10:
+  - FIT-5
+  - FIT-9
+  FIT-11:
+  - FIT-7
+  - FIT-9
+  FIT-12:
+  - FIT-5
+  - FIT-11
+  FIT-13:
+  - FIT-4
+  - FIT-6
+implementation_order:
+  sequence:
+  - FIT-1
+  - FIT-2
+  - FIT-3
+  - FIT-4
+  - FIT-5
+  - FIT-6
+  - FIT-7
+  - FIT-8
+  - FIT-9
+  - FIT-10
+  - FIT-11
+  - FIT-12
+  - FIT-13
+  rationale: 'Foundation first (scaffold, then schema) because every story depends
+    on them. Auth next (core logic, session, navigation shell, screens) because all
+    tracking data is scoped to a logged-in user and the shell is needed to host any
+    screen. Workout tracking before calorie tracking because the two are structurally
+    parallel and workouts exercise the richer model (type, duration, calories); calorie
+    stories can reuse its patterns and could even run in parallel with FIT-8 if two
+    developers are available. Stats last among P0 work because it consumes both data
+    layers. FIT-13 (stay signed in) is P1 polish that touches auth and login UI, so
+    it lands after both are stable.
+
+    '
+risks:
+- id: R1
+  risk: expo-sqlite cannot run inside jest on a dev machine; untested SQL may only
+    fail on device
+  mitigation: Data layer designed behind a thin adapter so SQL executes against a
+    Node SQLite driver in tests; device smoke test before release
+- id: R2
+  risk: Local-only auth gives no real security guarantees (device compromise exposes
+    hashes); could be mistaken for production-grade auth
+  mitigation: DEC-3 scopes this as mock/local; salted hashing via expo-crypto; document
+    limitation in README; swap for hosted auth post-MVP
+- id: R3
+  risk: GitHub repo/board sync (DEC-4) not yet connected in this environment; stories
+    exist only as local files
+  mitigation: Stories authored 1:1 issue-ready; sync as soon as GitHub access is configured
+- id: R4
+  risk: Scope creep toward charts, editing entries, or cloud sync mid-MVP
+  mitigation: Explicit out_of_scope list; changes go through human approval
+open_questions:
+- id: Q1
+  question: 'Workout types: fixed preset list (e.g. Run, Walk, Cycle, Strength, Swim,
+    Other) or free text? Stories assume preset list + Other for clean type sorting.'
+  blocking:
+  - FIT-7
+  - FIT-8
+- id: Q2
+  question: 'Password policy for local accounts: stories assume minimum 8 characters
+    and no other complexity rules. OK?'
+  blocking:
+  - FIT-3
+  - FIT-6
+- id: Q3
+  question: Should stats include net calories (burned minus consumed)? Stories assume
+    yes as a single summary number.
+  blocking:
+  - FIT-11
+  - FIT-12
+- id: Q4
+  question: Is editing/deleting logged entries required for MVP? Currently scoped
+    out as a fast-follow.
+  blocking: []
+- id: Q5
+  question: When should GitHub repo + board sync (DEC-4) happen — before implementation
+    starts, or in parallel?
+  blocking: []
+roadmap_approval:
+  approved: true
+  approved_by: Steven
+  approved_date: '2026-08-20'
+  notes: 'Approved as-is incl. PM assumptions: preset workout types, min-8-char passwords,
+    net calories in summary, edit/delete deferred'
