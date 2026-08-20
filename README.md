@@ -1,3 +1,7 @@
-# FitTrack
+# FitTrack — MOVED
 
-Mock fitness tracker (Expo / React Native). Managed by the Ergo Proxy workflow — see `project/` for approved decisions and `stories/` for the story backlog (each story maps 1:1 to a GitHub issue).
+⚠️ **This copy is deprecated and no longer maintained.**
+
+FitTrack now lives at **[Project-Yato/fittrack](https://github.com/Project-Yato/fittrack)** — that repo holds the current project state, the approved backlog, and the active issues.
+
+This repository was a temporary workaround created while GitHub app access to the Project-Yato org was being sorted out. It is safe to delete or archive.
